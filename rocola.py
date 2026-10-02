@@ -3,8 +3,8 @@
 Juego de escritorio: suena un cover de música latina y eliges, entre 4
 opciones, qué artista o grupo grabó la versión original.
 Audio: previews de 30 s de la API pública de Deezer (se guardan en cache/).
-Si pones tu propio MP3 en audio/<n>_cover.mp3 o audio/<n>_original.mp3
-(n = índice en canciones.json), se usa ese archivo en lugar del preview.
+Si pones tu propio MP3 en audio/ con el mismo nombre que tendría en cache/
+(p. ej. audio/selena_como_flor.mp3), se usa ese archivo en lugar del preview.
 Los campos opcionales cover_busqueda_artista / cover_busqueda_titulo del JSON
 sirven cuando Deezer publica el cover con otro nombre.
 """
@@ -24,7 +24,7 @@ import pygame
 BASE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(BASE, "cache")
 AUDIO = os.path.join(BASE, "audio")
-VIDAS = 3
+VIDAS = 5
 PUNTOS_ACIERTO = 10
 
 BG, FG, ACC, OK, BAD, BTN = "#1b1b2f", "#f0f0f0", "#e43f5a", "#4ecca3", "#e43f5a", "#2e2e4f"
@@ -63,12 +63,17 @@ def buscar_preview(artista, titulo):
     return mejor
 
 
-def obtener_audio(idx, tipo, artista, titulo):
-    propio = os.path.join(AUDIO, f"{idx}_{tipo}.mp3")
+def nombre_archivo(artista, titulo):
+    return normalizar(f"{artista} {titulo}").replace(" ", "_") + ".mp3"
+
+
+def obtener_audio(artista, titulo):
+    nombre = nombre_archivo(artista, titulo)
+    propio = os.path.join(AUDIO, nombre)
     if os.path.exists(propio):
         return propio
     os.makedirs(CACHE, exist_ok=True)
-    ruta = os.path.join(CACHE, f"{idx}_{tipo}.mp3")
+    ruta = os.path.join(CACHE, nombre)
     if not os.path.exists(ruta):
         url = buscar_preview(artista, titulo)
         if not url:
@@ -165,13 +170,13 @@ class Rocola:
         self.b_siguiente.config(state="disabled")
         self.b_repetir.config(state="disabled")
         self.estado.config(text="⏳ Cargando cover...")
-        self.cargar(self.idx, "cover", c.get("cover_busqueda_artista", c["cover_artista"]),
+        self.cargar(c.get("cover_busqueda_artista", c["cover_artista"]),
                     c.get("cover_busqueda_titulo", c["cover_titulo"]), self.al_cargar_cover)
 
-    def cargar(self, idx, tipo, artista, titulo, callback):
+    def cargar(self, artista, titulo, callback):
         def trabajo():
             try:
-                ruta = obtener_audio(idx, tipo, artista, titulo)
+                ruta = obtener_audio(artista, titulo)
                 self.root.after(0, callback, ruta, None)
             except Exception as ex:  # red caída, sin resultados, etc.
                 self.root.after(0, callback, None, ex)
@@ -183,9 +188,9 @@ class Rocola:
 
     def al_cargar_cover(self, ruta, error):
         if error:
-            self.estado.config(text=f"⚠ No se pudo cargar el audio ({error}). Pasando a la siguiente...")
-            self.b_siguiente.config(state="normal")
+            self.estado.config(text="⚠ No se pudo cargar el audio, pasando a otra canción...")
             self.ronda -= 1
+            self.root.after(1200, self.siguiente_ronda)
             return
         self.ruta_cover = ruta
         self.reproducir(ruta)
@@ -222,7 +227,7 @@ class Rocola:
                                f"💡 {c.get('dato', '')}"))
         self.estado.config(text="⏳ Cargando la versión original...")
         pygame.mixer.music.stop()
-        self.cargar(self.idx, "original", c["original_artista"], c["original_titulo"], self.al_cargar_original)
+        self.cargar(c["original_artista"], c["original_titulo"], self.al_cargar_original)
 
     def al_cargar_original(self, ruta, error):
         self.b_siguiente.config(state="normal")
