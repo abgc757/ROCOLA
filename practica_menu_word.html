@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica: Menú en Word</title>
+<style>
+:root{--bg:#f4f7f5;--card:#fff;--txt:#1d2b24;--muted:#5b6b63;--acc:#2b579a;--acc2:#e8eef8;--line:#d5e2da}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111815;--card:#1a2420;--txt:#e6efe9;--muted:#9fb3a8;--acc:#6c9be0;--acc2:#1f2a3d;--line:#2c3d34}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Segoe UI,Arial,sans-serif;line-height:1.5}
+header{background:var(--acc);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:1.3rem}
+header p{margin:2px 0 0;font-size:.9rem;opacity:.9}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.prog{flex:1;min-width:150px;height:10px;background:rgba(255,255,255,.3);border-radius:5px;overflow:hidden}
+.prog div{height:100%;width:0;background:#fff;transition:width .3s}
+button{background:var(--acc);color:#fff;border:0;border-radius:6px;padding:8px 14px;font-size:.95rem;cursor:pointer}
+header button{background:#fff;color:#2b579a}
+main{max-width:860px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:1.1rem;color:var(--acc)}
+.time{font-size:.8rem;color:var(--muted)}
+.step{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border:0}
+.step input{margin-top:5px;width:18px;height:18px;accent-color:var(--acc)}
+.step.done label{text-decoration:line-through;color:var(--muted)}
+.tip{background:var(--acc2);border-left:4px solid var(--acc);padding:8px 10px;border-radius:4px;font-size:.92rem;margin-top:8px}
+code,kbd{background:var(--acc2);padding:1px 5px;border-radius:4px;font-family:Consolas,monospace}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:8px}
+td,th{border:1px solid var(--line);padding:4px 6px;text-align:left}
+th{background:var(--acc);color:#fff}
+.tw{overflow-x:auto}
+.q{margin:10px 0}
+.q label{display:block;cursor:pointer}
+#res{font-weight:bold;margin-top:8px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>🍽️ Práctica: Diseña el Menú de un Restaurante en Word</h1>
+  <p>Informática Aplicada I · BT_TUR_3 · Duración: 60 minutos</p>
+  <div class="bar">
+    <span id="clock">⏱ 60:00</span>
+    <button id="startBtn">Iniciar cronómetro</button>
+    <div class="prog"><div id="pb"></div></div>
+    <span id="pct">0%</span>
+  </div>
+</header>
+<main>
+  <div class="card">
+    <h2>🎯 Objetivo</h2>
+    <p>Diseñar en Microsoft Word el menú impreso de un restaurante turístico con portada, categorías, precios alineados con tabulaciones y puntos guía, imágenes, bordes y formato profesional.</p>
+    <p class="time">Marca cada paso al terminarlo. Tu avance se guarda en este navegador. Sigue los tiempos sugeridos para terminar en 1 hora.</p>
+    <label>Tu nombre: <input id="nombre" style="padding:6px;border:1px solid var(--line);border-radius:4px;width:220px"></label>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="card">
+    <h2>✅ Paso 7 · Autoevaluación (min 55–60)</h2>
+    <div id="quiz"></div>
+    <button id="checkQ">Revisar respuestas</button>
+    <div id="res"></div>
+  </div>
+
+  <div class="card">
+    <h2>📤 Entrega</h2>
+    <p>Guarda tu archivo como <code>Menu_ApellidoNombre.docx</code> y el PDF <code>Menu_ApellidoNombre.pdf</code> y súbelo a la tarea de la plataforma. Toma captura de esta página con tu progreso al 100% y tu calificación de la autoevaluación.</p>
+    <div class="tip"><b>Rúbrica (10 pts):</b> Portada y datos 2 · 12 platillos con descripción 2 · Precios con tabulación y puntos guía 2 · Diseño (bordes, color, imagen, estilos) 2 · Encabezado/pie, tabla y ortografía 1 · Puntualidad 1</div>
+  </div>
+</main>
+<script>
+const S=[
+ {t:"Paso 1 · Preparar el documento",m:"min 0–5",s:[
+  "Abre Word y crea un <b>Documento en blanco</b>.",
+  "<b>Formato › Orientación › Vertical</b> y <b>Tamaño › Carta</b>.",
+  "<b>Márgenes › Personalizados</b>: 2 cm en todos los lados.",
+  "Guarda como <code>Menu_ApellidoNombre.docx</code> (<kbd>Ctrl</kbd>+<kbd>G</kbd>)."],
+  tip:"Guarda cada 10 minutos con <kbd>Ctrl</kbd>+<kbd>G</kbd>."},
+ {t:"Paso 2 · Portada del menú",m:"min 5–12",s:[
+  "Escribe el nombre de tu restaurante (ej. <i>Restaurante El Mirador</i>), centrado.",
+  "Aplícale <b>Insertar › WordArt</b> o fuente decorativa de 36 pts.",
+  "Debajo escribe un eslogan en cursiva, 14 pts, centrado.",
+  "Agrega horario, dirección y teléfono en 11 pts."]},
+ {t:"Paso 3 · Diseño de página",m:"min 12–20",s:[
+  "<b>Diseño › Bordes de página</b>: elige un borde de <b>Arte</b> o línea doble.",
+  "<b>Diseño › Color de página</b>: un tono claro (crema o beige).",
+  "Inserta una imagen o icono alusivo (<b>Insertar › Iconos / Imágenes en línea</b>).",
+  "Ajusta la imagen con <b>Ajustar texto › Delante del texto</b> y colócala junto al título."]},
+ {t:"Paso 4 · Categorías y platillos",m:"min 20–32",s:[
+  "Escribe 4 categorías: <b>Entradas, Platos fuertes, Postres, Bebidas</b>, con 3 platillos cada una.",
+  "Aplica a cada categoría el estilo <b>Título 1</b> (Inicio › Estilos) y cámbiale el color.",
+  "Debajo de cada platillo escribe una descripción corta en cursiva, 10 pts."],
+  ex:true},
+ {t:"Paso 5 · Precios alineados con tabulaciones",m:"min 32–42",s:[
+  "Selecciona las líneas de los platillos.",
+  "Abre <b>Párrafo › Tabulaciones</b> (botón en la esquina del grupo Párrafo).",
+  "Posición: <code>16 cm</code>, Alineación: <b>Derecha</b>, Relleno: <b>2 ......</b> → Fijar → Aceptar.",
+  "En cada platillo coloca el cursor después del nombre, presiona <kbd>Tab</kbd> y escribe el precio (ej. <code>$85.00</code>)."],
+  tip:"Así los precios quedan alineados a la derecha con puntos guía, como un menú real. Activa la regla en <b>Vista › Regla</b>."},
+ {t:"Paso 6 · Detalles finales",m:"min 42–55",s:[
+  "Inserta una tabla de 2 columnas con <b>Paquetes / Promociones</b> y aplícale un <b>Estilo de tabla</b>.",
+  "Agrega <b>Encabezado</b> con el nombre del restaurante y <b>Pie de página</b> con redes sociales.",
+  "Revisa ortografía: <b>Revisar › Ortografía y gramática</b> (<kbd>F7</kbd>).",
+  "Verifica que todo quepa en 1–2 páginas con <b>Archivo › Imprimir</b> (vista previa).",
+  "Exporta también como PDF: <b>Archivo › Guardar como › PDF</b>."],
+  tip:"Si te sobra espacio, usa <b>Diseño › Columnas › Dos</b> para Postres y Bebidas."}
+];
+const Q=[
+ ["¿Dónde se configuran los puntos guía entre platillo y precio?",["Párrafo › Tabulaciones","Insertar › Tabla","Diseño › Columnas"],0],
+ ["¿Qué alineación debe tener la tabulación de los precios?",["Izquierda","Centrada","Derecha"],2],
+ ["¿Qué menú permite poner un borde decorativo a la hoja?",["Diseño › Bordes de página","Inicio › Fuente","Referencias"],0],
+ ["Para que la imagen se mueva libremente se usa…",["Ajustar texto › Delante del texto","Copiar formato","Interlineado"],0],
+ ["¿Qué tecla abre la revisión ortográfica?",["F5","F7","F12"],1]
+];
+const K="practicaMenuWord";let st={};try{st=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}};
+const sec=document.getElementById("sections");let total=0;
+S.forEach((x,i)=>{let h=`<div class="card"><h2>${x.t}</h2><div class="time">⏱ ${x.m}</div>`;
+ x.s.forEach((s,j)=>{const id=i+"-"+j;total++;h+=`<div class="step${st[id]?" done":""}"><input type="checkbox" id="c${id}" data-id="${id}" ${st[id]?"checked":""}><label for="c${id}">${s}</label></div>`});
+ if(x.ex)h+=`<div class="tw"><table><tr><th>Categoría</th><th>Platillo</th><th>Descripción</th><th>Precio</th></tr><tr><td>Entrada</td><td>Guacamole</td><td>Con totopos</td><td>85</td></tr><tr><td>Plato fuerte</td><td>Enchiladas verdes</td><td>3 piezas con pollo</td><td>145</td></tr><tr><td>Postre</td><td>Flan napolitano</td><td>Casero</td><td>60</td></tr><tr><td>Bebida</td><td>Agua de jamaica</td><td>500 ml</td><td>35</td></tr></table></div>`;
+ if(x.tip)h+=`<div class="tip">💡 ${x.tip}</div>`;sec.insertAdjacentHTML("beforeend",h+"</div>")});
+function upd(){const d=Object.values(st).filter(v=>v===true).length,p=Math.round(d/total*100);pb.style.width=p+"%";pct.textContent=p+"%"}
+sec.addEventListener("change",e=>{const id=e.target.dataset.id;if(!id)return;st[id]=e.target.checked;e.target.parentElement.classList.toggle("done",e.target.checked);save();upd()});
+upd();
+const nm=document.getElementById("nombre");nm.value=st.nombre||"";nm.oninput=()=>{st.nombre=nm.value;save()};
+const qz=document.getElementById("quiz");Q.forEach((q,i)=>{let h=`<div class="q"><b>${i+1}. ${q[0]}</b>`;q[1].forEach((o,j)=>h+=`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`);qz.insertAdjacentHTML("beforeend",h+"</div>")});
+checkQ.onclick=()=>{let ok=0;Q.forEach((q,i)=>{const r=document.querySelector(`input[name=q${i}]:checked`);if(r&&+r.value===q[2])ok++});res.textContent=`${nm.value||"Alumno"}: ${ok}/${Q.length} correctas ${ok===Q.length?"🎉 ¡Excelente!":"— repasa los pasos marcados"}`};
+let end=st.end||0,iv;const clk=document.getElementById("clock");
+function tick(){const r=Math.max(0,end-Date.now()),m=Math.floor(r/60000),s=Math.floor(r%60000/1000);clk.textContent=`⏱ ${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;if(!r){clearInterval(iv);clk.textContent="⏱ ¡Tiempo!"}}
+function run(){clearInterval(iv);iv=setInterval(tick,1000);tick();startBtn.textContent="Reiniciar"}
+if(end>Date.now())run();
+startBtn.onclick=()=>{end=Date.now()+3600000;st.end=end;save();run()};
+</script>
+</body>
+</html>
